@@ -1,33 +1,56 @@
 """Configuration settings for the AI Knowledge Engine.
 
-Provides hyperparameters for text chunking, semantic retrieval,
+Provides centralized hyperparameters for text chunking, semantic retrieval,
 vector store persistence, and generative answering.
 """
 
 import os
 from typing import Final
 
+# ==============================================================================
+# 1. TEXT CHUNKING CONFIGURATION
+# ==============================================================================
+
 # Number of words per text chunk
 CHUNK_SIZE: Final[int] = int(os.getenv("CHUNK_SIZE", "120"))
 
-# Number of overlapping words between consecutive chunks
+# Number of overlapping words between consecutive chunks to preserve context
 CHUNK_OVERLAP: Final[int] = int(os.getenv("CHUNK_OVERLAP", "30"))
 
-# Maximum number of top relevant chunks to retrieve for context
+
+# ==============================================================================
+# 2. RETRIEVAL & VECTOR SIMILARITY SETTINGS
+# ==============================================================================
+
+# Maximum number of top relevant chunks to retrieve for LLM context
 TOP_K: Final[int] = int(os.getenv("TOP_K", "5"))
 
 # Minimum cosine similarity threshold (range 0.0 to 1.0) for retrieval
 THRESHOLD: Final[float] = float(os.getenv("THRESHOLD", "0.3"))
 
-# Path prefix for storing vector embeddings and chunk metadata
+
+# ==============================================================================
+# 3. STORAGE & PERSISTENCE CONFIGURATION
+# ==============================================================================
+
+# Filepath prefix for saving embedding vectors and metadata
 STORE_PREFIX: Final[str] = os.getenv("STORE_PREFIX", os.path.join("storage", "store"))
 
-# Default local LLM model for answer generation
+
+# ==============================================================================
+# 4. GENERATIVE LLM MODEL SETTINGS
+# ==============================================================================
+
+# Default local LLM model for answer synthesis via Ollama
 LLM_MODEL: Final[str] = os.getenv("LLM_MODEL", "phi3")
 
 
+# ==============================================================================
+# 5. CONFIGURATION VALIDATION & INTEGRITY CHECKS
+# ==============================================================================
+
 def validate_config() -> None:
-    """Validates configuration parameters to prevent runtime errors."""
+    """Validates configuration parameters to prevent runtime calculation errors."""
     if CHUNK_SIZE <= 0:
         raise ValueError(f"CHUNK_SIZE must be positive, got {CHUNK_SIZE}")
     if CHUNK_OVERLAP < 0:
@@ -42,4 +65,5 @@ def validate_config() -> None:
         raise ValueError(f"THRESHOLD must be between 0.0 and 1.0, got {THRESHOLD}")
 
 
+# Run validation upon module import
 validate_config()
