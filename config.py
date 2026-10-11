@@ -1,0 +1,5 @@
+CHUNK_SIZE = 120
+CHUNK_OVERLAP = 30
+TOP_K = 5
+THRESHOLD = 0.3
+STORE_PREFIX = "storage/store"
